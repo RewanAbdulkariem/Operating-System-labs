@@ -1,7 +1,4 @@
 # Simple Shell (Multi-Processing)
-
-![Shell](shell.png)
-
 ## 1. Objectives
 
 1. Familiarity with system calls in Unix environment.
