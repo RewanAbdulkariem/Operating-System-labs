@@ -8,7 +8,7 @@
 /**
  * main -
  */
-
+/*
 int main()
 {
     pid_t pid;
@@ -43,3 +43,4 @@ int main()
 }
 
 
+*/
