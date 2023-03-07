@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <signal.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -6,10 +8,12 @@
 /**
  * main -
  */
-/*
+
 int main()
 {
     pid_t pid;
+    size_t n = 10;
+    char *buf = NULL;
     char *argv[]= {"/bin/ls", "-l", NULL};
 
     printf("BEFORE \n");
@@ -26,15 +30,16 @@ int main()
             perror("Error");
         }
         printf("child");
-        printf("child");
     }
     else
     {
         wait(NULL);
+        printf("Enter command ");
+        getline(&buf, &n, stdin);
+        system(buf);
         printf("parent ");
     }
     printf("AFTER\n");
 }
 
 
-*/
