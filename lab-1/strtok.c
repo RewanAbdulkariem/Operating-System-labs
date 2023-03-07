@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 
-int main()
+int str_tok()
 
 {
     char str[] = "OS is great challenge";
