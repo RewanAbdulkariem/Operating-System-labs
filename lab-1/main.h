@@ -8,6 +8,8 @@
 void on_child_exit(int signal);
 void setup_environment();
 void shell();
-void execute_command(char **command, int arg_length);
+void executeCommand();
+void  parse_input(char *cmd,char *delim);
+int shellBultin();
 
 #endif //MAIN_H

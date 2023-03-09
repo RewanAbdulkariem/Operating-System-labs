@@ -101,21 +101,21 @@ function shell()
         evaluate_expression():
         switch(input_type):
             case shell_builtin:
-                execute_shell_bultin();
+                shellBultin();
             case executable_or_error:
-                execute_command():
+                executeCommand():
 
     while command_is_not_exit
 
 
-function execute_shell_bultin()
+function shellBultin()
     swirch(command_type):
         case cd:
         case echo:
         case export:
 
 
-function execute_command()
+function executeCommand()
     child_id = fork()
     if child:
         execvp(command parsed)
