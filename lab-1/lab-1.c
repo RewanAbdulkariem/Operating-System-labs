@@ -9,6 +9,7 @@
  * Created by Rewan on 3/7/23.
  */
 char *cwd;
+short exit_shell = 0;
 int main(void)  //function parent_main()
 {
     signal(SIGCHLD, on_child_exit);
@@ -31,7 +32,6 @@ void setup_environment()
 }
 void shell()
 {
-    short exit_shell = 0;
     char *cmd = NULL ,*token = NULL;
     char *delim = " \n";
     size_t n = 0;
@@ -39,6 +39,7 @@ void shell()
     char ** argv = NULL;
     while (! exit_shell)
     {
+        getcwd(cwd, 256);
         printf("%s ",cwd);
         printf("SHELL# ");
         // Check if get-line() fails or the user enters an empty command
@@ -69,7 +70,10 @@ void execute_command(char **command, int arg_length)
 {
     if (strcmp(command[0], "cd") == 0)
     {
-        cwd = command[1];
+        if(command[1] != NULL)
+            cwd = command[1];
+        else
+            cwd = "/home";
         chdir(cwd);
     }
     else if (strcmp(command[0], "echo") == 0)
@@ -77,11 +81,13 @@ void execute_command(char **command, int arg_length)
         // Execute echo built-in command
         //execute_echo(command, arg_length);
     }
-   // else if (strcmp(command[0], "export") == 0)
-  //  {
+    else if (strcmp(command[0], "export") == 0)
+    {
         // Execute export built-in command
         //execute_export(command, arg_length);
-  //  }
+    }
+    else if (strcmp(command[0], "exit") == 0)
+        exit_shell = 1;
     else
     {
         // Assume it is an executable command and execute it using execvp
