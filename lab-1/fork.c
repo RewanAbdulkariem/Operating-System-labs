@@ -7,8 +7,8 @@
 #include <sys/wait.h>
 /**
  * main -
- */
-/*
+
+
 int main()
 {
     pid_t pid;
@@ -41,6 +41,5 @@ int main()
     }
     printf("AFTER\n");
 }
-
 
 */

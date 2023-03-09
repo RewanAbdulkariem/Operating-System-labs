@@ -6,7 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 
-int main(void)
+int cmd(void)
 {
     char *cmd = NULL, *cmd_cpy = NULL, *token = NULL;
     char *delim = " \n";

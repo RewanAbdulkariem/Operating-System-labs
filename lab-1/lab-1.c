@@ -8,6 +8,7 @@
 /**
  * Created by Rewan on 3/7/23.
  */
+char *cwd;
 int main(void)  //function parent_main()
 {
     signal(SIGCHLD, on_child_exit);
@@ -25,9 +26,8 @@ void on_child_exit(int signal)
 }
 void setup_environment()
 {
-    char *cwd = getenv("PWD");
+    cwd = getenv("PWD");
     chdir(cwd);
-    printf("%s ",cwd);
 }
 void shell()
 {
@@ -39,9 +39,17 @@ void shell()
     char ** argv = NULL;
     while (! exit_shell)
     {
+        printf("%s ",cwd);
         printf("SHELL# ");
-        getline(&cmd, &n, stdin);
-        printf("%s",cmd);
+        // Check if get-line() fails or the user enters an empty command
+        if (getline(&cmd, &n, stdin) == -1 || cmd[0] == '\n')
+        {
+            continue;
+        }
+
+        argc = 0;
+        argv = NULL;
+
         token = strtok(cmd, delim);
         while (token)
         {
@@ -49,10 +57,8 @@ void shell()
             argv[argc++] = token;
             token = strtok(NULL, delim);
         }
-        printf("token");
         argv = realloc(argv, (argc + 1) * sizeof(char *));
         argv[argc] = NULL;
-        printf("command");
         execute_command(argv,argc);
     }
     free(cmd),free(argv);
@@ -63,36 +69,23 @@ void execute_command(char **command, int arg_length)
 {
     if (strcmp(command[0], "cd") == 0)
     {
-        printf("if");
-
-        // Execute cd built-in command
-        //execute_cd(command, arg_length);
+        cwd = command[1];
+        chdir(cwd);
     }
     else if (strcmp(command[0], "echo") == 0)
     {
-        printf("else if 2");
-
         // Execute echo built-in command
-       //execute_echo(command, arg_length);
+        //execute_echo(command, arg_length);
     }
-    else if (strcmp(command[0], "export") == 0)
-    {
-        printf("elseif 3");
-
+   // else if (strcmp(command[0], "export") == 0)
+  //  {
         // Execute export built-in command
         //execute_export(command, arg_length);
-    }
+  //  }
     else
     {
-        printf("else");
         // Assume it is an executable command and execute it using execvp
         int pid = fork();
-        printf("%d",pid);
-        char *temp = "/bin/";
-        strcat(temp,command[0]);
-        strcpy(command[0],temp);
-        free(temp);
-        printf("%s",command[0]);
         switch (pid)
         {
             case 0:

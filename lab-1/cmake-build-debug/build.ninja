@@ -79,6 +79,12 @@ build CMakeFiles/lab_1.dir/cmd_line_args.c.o: C_COMPILER__lab_1_Debug /home/rewa
   OBJECT_DIR = CMakeFiles/lab_1.dir
   OBJECT_FILE_DIR = CMakeFiles/lab_1.dir
 
+build CMakeFiles/lab_1.dir/lab-1.c.o: C_COMPILER__lab_1_Debug /home/rewan/Operating$ System$ labs/lab-1/lab-1.c || cmake_object_order_depends_target_lab_1
+  DEP_FILE = CMakeFiles/lab_1.dir/lab-1.c.o.d
+  FLAGS = -g -fdiagnostics-color=always -std=gnu11
+  OBJECT_DIR = CMakeFiles/lab_1.dir
+  OBJECT_FILE_DIR = CMakeFiles/lab_1.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target lab_1
@@ -87,7 +93,7 @@ build CMakeFiles/lab_1.dir/cmd_line_args.c.o: C_COMPILER__lab_1_Debug /home/rewa
 #############################################
 # Link the executable lab_1
 
-build lab_1: C_EXECUTABLE_LINKER__lab_1_Debug CMakeFiles/lab_1.dir/fork.c.o CMakeFiles/lab_1.dir/getline.c.o CMakeFiles/lab_1.dir/strtok.c.o CMakeFiles/lab_1.dir/arg.c.o CMakeFiles/lab_1.dir/cmd_line_args.c.o
+build lab_1: C_EXECUTABLE_LINKER__lab_1_Debug CMakeFiles/lab_1.dir/fork.c.o CMakeFiles/lab_1.dir/getline.c.o CMakeFiles/lab_1.dir/strtok.c.o CMakeFiles/lab_1.dir/arg.c.o CMakeFiles/lab_1.dir/cmd_line_args.c.o CMakeFiles/lab_1.dir/lab-1.c.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/lab_1.dir
   POST_BUILD = :
