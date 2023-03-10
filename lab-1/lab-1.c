@@ -10,7 +10,7 @@
  */
 char *cwd;
 short exit_shell = 0;
-char* built_in[3] = {"cd", "export", "echo","exit"};
+char* built_in[4] = {"cd", "export", "echo","exit"};
 char ** argv = NULL;
 int argc = 0;
 char *token = NULL;
@@ -56,12 +56,15 @@ void shell()
         parse_input(cmd," \n");
         for (int i = 0; i < 4;i++)
         {
-            if (!strcmp(argv[0],built_in[i])) {
+            if (!strcmp(argv[0],built_in[i]))
+            {
                 InternalCmd = 1;
                 break;
             }
             else
+            {
                 InternalCmd = 0;
+            }
         }
         if (InternalCmd == 1)
         {
@@ -76,7 +79,7 @@ void shell()
 }
 void  parse_input(char *cmd,char *delim)
 {
-    argv = 0;
+    argv = NULL;
     argc = 0;
 
     token = strtok(cmd, delim);
@@ -109,7 +112,7 @@ int shellBultin()
             // check if the argument starts with a dollar sign
             if (argv[i][0] == '$' )
             {
-                printf("%s",argv[i]);
+                //printf("%s",argv[i]);
                 char *name = strdup(argv[i] + 1);
                 name[strlen(name) - 1] = '\0';
                 value = getenv(name);
@@ -131,8 +134,15 @@ int shellBultin()
                 free(name);
             }
             else
+            {
+                if (argv[i][strlen(argv[i]) - 1] == '\"')
+                    argv[i][strlen(argv[i]) - 1] = '\0';
+                if (argv[i][0] == '\"')
+                    argv[i]++;
                 printf("%s ", argv[i]);
+            }
         }
+
         printf("\n");
     }
     else if (strcmp(argv[0], "export") == 0)
@@ -142,24 +152,22 @@ int shellBultin()
 
         token = strtok(argv[1],"=");
         var = token;
+        token = strtok(NULL,"");
+        value = malloc(strlen(token) + 1);
+        strcpy(value, token);
 
-        token = strtok(NULL,"=");
-        // concatenate remaining tokens into a single value string
-        value = token;
         if (value[0] == '\"')
-        {
             value++;
-            value[strlen(value)-1] = '\0'; // remove ending double quote
-        }
+
         for (int i = 2; i < argc; i++)
         {
-            printf("val1 %s\n",value);
             strcat(value, " ");
-            printf("val2 %s\n",value);
             strcat(value, argv[i]);
-            printf("val3 %s\n",value);
 
         }
+        if (value[strlen(value)-1] == '\"')
+            value[strlen(value)-1] = '\0';
+
         setenv(var,value,1);
     }
     else if (strcmp(argv[0], "exit") == 0)
