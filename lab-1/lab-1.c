@@ -138,10 +138,29 @@ int shellBultin()
     else if (strcmp(argv[0], "export") == 0)
     {
         char * var = NULL;
+        char * value = NULL;
+
         token = strtok(argv[1],"=");
         var = token;
+
         token = strtok(NULL,"=");
-        setenv(var,token,1);
+        // concatenate remaining tokens into a single value string
+        value = token;
+        if (value[0] == '\"')
+        {
+            value++;
+            value[strlen(value)-1] = '\0'; // remove ending double quote
+        }
+        for (int i = 2; i < argc; i++)
+        {
+            printf("val1 %s\n",value);
+            strcat(value, " ");
+            printf("val2 %s\n",value);
+            strcat(value, argv[i]);
+            printf("val3 %s\n",value);
+
+        }
+        setenv(var,value,1);
     }
     else if (strcmp(argv[0], "exit") == 0)
         exit_shell = 1;
