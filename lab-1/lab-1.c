@@ -48,11 +48,11 @@ void shell()
         getcwd(cwd, 256);
         printf("%s ",cwd);
         printf("SHELL# ");
+
         // Check if get-line() fails or the user enters an empty command
         if (getline(&cmd, &n, stdin) == -1 || cmd[0] == '\n')
-        {
             continue;
-        }
+
         parse_input(cmd," \n");
         for (int i = 0; i < 4;i++)
         {
@@ -62,18 +62,13 @@ void shell()
                 break;
             }
             else
-            {
                 InternalCmd = 0;
-            }
         }
+
         if (InternalCmd == 1)
-        {
             shellBultin();
-        }
         else
-        {
             executeCommand();
-        }
     }
     free(cmd),free(argv);
 }
@@ -81,19 +76,36 @@ void  parse_input(char *cmd,char *delim)
 {
     argv = NULL;
     argc = 0;
-
+    char *token2 = NULL;
     token = strtok(cmd, delim);
     while (token)
     {
-        argv = realloc(argv, (argc + 1) * sizeof(char *));
-        argv[argc++] = token;
+        if (token[0] == '$') // if token starts with $
+        {
+            char* env_var = getenv(token + 1); // get value of env variable
+            if (env_var != NULL) // if env variable exists
+            {
+                token2 = strtok(env_var," ");
+                while (token2)
+                {
+                    argv = realloc(argv, (argc + 1) * sizeof(char *));
+                    argv[argc++] = token2; // add env variable value to argv array
+                    token2 = strtok(NULL," ");
+                }
+            }
+        }
+        else
+        {
+            argv = realloc(argv, (argc + 1) * sizeof(char *));
+            argv[argc++] = token;
+        }
         token = strtok(NULL, delim);
     }
     argv = realloc(argv, (argc + 1) * sizeof(char *));
     argv[argc] = NULL;
 
 }
-int shellBultin()
+void shellBultin()
 {
     if (strcmp(argv[0], "cd") == 0)
     {
@@ -106,41 +118,13 @@ int shellBultin()
     else if (strcmp(argv[0], "echo") == 0)
     {
         int i ;
-        char *value = NULL;
         for ( i = 1; i < argc; i++)
         {
-            // check if the argument starts with a dollar sign
-            if (argv[i][0] == '$' )
-            {
-                //printf("%s",argv[i]);
-                char *name = strdup(argv[i] + 1);
-                name[strlen(name) - 1] = '\0';
-                value = getenv(name);
-                if (value == NULL)
-                    printf("Error: no such environment variable\n");
-                else
-                    printf("%s ", value);
-                free(name);
-            }
-            else if (argv[i][1] == '$')
-            {
-                char *name = strdup(argv[i] + 2);
-                name[strlen(name) - 1] = '\0';
-                value = getenv(name);
-                if (value == NULL)
-                    printf("Error: no such environment variable\n");
-                else
-                    printf("%s ", value);
-                free(name);
-            }
-            else
-            {
-                if (argv[i][strlen(argv[i]) - 1] == '\"')
-                    argv[i][strlen(argv[i]) - 1] = '\0';
-                if (argv[i][0] == '\"')
-                    argv[i]++;
-                printf("%s ", argv[i]);
-            }
+            if (argv[i][strlen(argv[i]) - 1] == '\"')
+                argv[i][strlen(argv[i]) - 1] = '\0';
+            if (argv[i][0] == '\"')
+                argv[i]++;
+            printf("%s ", argv[i]);
         }
 
         printf("\n");

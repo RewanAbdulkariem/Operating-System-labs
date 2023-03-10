@@ -10,6 +10,7 @@ void setup_environment();
 void shell();
 void executeCommand();
 void  parse_input(char *cmd,char *delim);
-int shellBultin();
+void shellBultin();
+
 
 #endif //MAIN_H
