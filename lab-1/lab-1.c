@@ -17,6 +17,9 @@ char *token = NULL;
 
 int main(void)
 {
+    FILE *f = fopen("log.txt", "w");
+    fprintf(f, "%s", "");
+    fclose(f);
     signal(SIGCHLD, on_child_exit);
     setup_environment();
     shell();
@@ -25,10 +28,12 @@ int main(void)
 void on_child_exit(int signal)
 {
     int status;
+    FILE *f = fopen("log.txt", "a");
     while ((waitpid(-1, &status, WNOHANG)) > 0)
     {
-        printf("Child terminated\n");
+        fprintf(f, "%s", "Child Terminated\n");
     }
+    fclose(f);
 }
 void setup_environment()
 {
@@ -160,7 +165,12 @@ void shellBultin()
 void executeCommand()
 {
     // Assume it is an executable command and execute it using execvp
-    int pid = fork();
+    int background_flag = 0;
+    if (strstr(argv[argc-1],"&"))
+    {
+        background_flag = 1;
+    }
+    pid_t pid = fork();
     switch (pid)
     {
         case 0:
@@ -173,7 +183,11 @@ void executeCommand()
             perror("fork: ");
             break;
         default:
-            waitpid(pid, NULL, 0);
+            if (!background_flag) {
+                waitpid(pid, NULL, 0);
+            }
+            else
+                background_flag = 0;
             break;
     }
 }
