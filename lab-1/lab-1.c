@@ -4,12 +4,13 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <limits.h>
 #include "main.h"
 /**
  * Created by Rewan on 3/7/23.
  */
 char *cwd;
-short exit_shell = 0;
+char exit_shell = 0;
 char* built_in[4] = {"cd", "export", "echo","exit"};
 char ** argv = NULL;
 int argc = 0;
@@ -37,7 +38,7 @@ void on_child_exit(int signal)
 }
 void setup_environment()
 {
-    cwd = getenv("PWD");
+    cwd = getcwd(cwd,PATH_MAX);
     chdir(cwd);
 }
 void shell()
@@ -75,7 +76,7 @@ void shell()
         else
             executeCommand();
     }
-    free(cmd),free(argv);
+    free(cmd),free(argv), free(cwd);
 }
 void  parse_input(char *cmd,char *delim)
 {
@@ -83,8 +84,13 @@ void  parse_input(char *cmd,char *delim)
     argc = 0;
     char *token2 = NULL;
     token = strtok(cmd, delim);
+
     while (token)
     {
+        if (token[strlen(token) - 1] == '\"')
+            token[strlen(token) - 1] = '\0';
+        if (token[0] == '\"')
+            token++;
         if (token[0] == '$') // if token starts with $
         {
             char* env_var = getenv(token + 1); // get value of env variable
@@ -108,7 +114,7 @@ void  parse_input(char *cmd,char *delim)
     }
     argv = realloc(argv, (argc + 1) * sizeof(char *));
     argv[argc] = NULL;
-
+    free(token2);
 }
 void shellBultin()
 {
@@ -125,6 +131,7 @@ void shellBultin()
         int i ;
         for ( i = 1; i < argc; i++)
         {
+
             if (argv[i][strlen(argv[i]) - 1] == '\"')
                 argv[i][strlen(argv[i]) - 1] = '\0';
             if (argv[i][0] == '\"')
