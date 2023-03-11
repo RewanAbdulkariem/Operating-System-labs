@@ -19,6 +19,7 @@ char *token = NULL;
 int main(void)
 {
     FILE *f = fopen("log.txt", "w");
+
     fprintf(f, "%s", "");
     fclose(f);
     signal(SIGCHLD, on_child_exit);
@@ -30,9 +31,14 @@ void on_child_exit(int signal)
 {
     int status;
     FILE *f = fopen("log.txt", "a");
-    while ((waitpid(-1, &status, WNOHANG)) > 0)
+    if (f == NULL) {
+        perror("Error opening log file");
+        exit(EXIT_FAILURE);
+    }
+    pid_t child_pid;
+    while ((child_pid = waitpid(-1, &status, WNOHANG)) > 0)
     {
-        fprintf(f, "%s", "Child Terminated\n");
+        fprintf(f, "Child %d Terminated\n",child_pid);
     }
     fclose(f);
 }

@@ -11,6 +11,7 @@ void shell();
 void executeCommand();
 void  parse_input(char *cmd,char *delim);
 void shellBultin();
+void on_interrupt(int signal);
 
 
 #endif //MAIN_H
