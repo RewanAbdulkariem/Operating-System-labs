@@ -4,7 +4,7 @@
 #include <string.h>
 #include <pthread.h>
 #include "main.h"
-int **matOut = NULL;
+int **matOutA = NULL, **matOutB = NULL, **matOutC = NULL;
 int **matA = NULL, **matB = NULL;
 char *OutputFile;
 int rows[3];
@@ -40,7 +40,6 @@ int main(int argc, char *argv[])
         printf("\n");
     }
     */
-    AllocOutMat();
     PerMatrix();
     /**
     printf("matrix out\n");
@@ -51,7 +50,7 @@ int main(int argc, char *argv[])
     }
     */
     per_row();
-    free(matA),free(matB),free(matOut);
+    free(matA),free(matB);
 }
 void ReadMatrix(char *a, int index)
 {
@@ -61,8 +60,8 @@ void ReadMatrix(char *a, int index)
     strcpy(filename, a);
     strcat(filename, ".txt");
 	FILE *fp = fopen(filename, "r");
-    	if (fp == NULL)
-        	perror("Failed to open input file\n");
+    if (fp == NULL)
+        perror("Failed to open input file\n");
 	// read the number of rows and columns from the first line
 	fscanf(fp, "row=%d col=%d\n", &rows[index], &cols[index]);
     Matrix = MatrixSize(index);
@@ -103,28 +102,30 @@ int **MatrixSize(int index)
     }
     return Matrix;
 }
-void AllocOutMat()
+int ** AllocOutMat()
 {
     rows[2] = rows[0];
     cols[2] = cols[1];
-    matOut = MatrixSize(2);
+    return MatrixSize(2);
 }
 void PerMatrix()
 {
+    matOutA = AllocOutMat();
     for(int i = 0; i < rows[2]; i++)
     {
         for(int j = 0; j < cols[2]; j++)
         {
             for(int k = 0; k < cols[0]; k++)
-                matOut[i][j] += matA[i][k] * matB[k][j];
+                matOutA[i][j] += matA[i][k] * matB[k][j];
         }
     }
     char filename[50];
     strcpy(filename, OutputFile);
     strcat(filename, "_per_matrix.txt");
-    PrintArray(filename);
+    PrintArray(filename,matOutA);
+    free(matOutA);
 }
-void PrintArray(char *filename)
+void PrintArray(char *filename,int **matOut)
 {
     // Open the file for writing
     FILE *fp;
@@ -143,33 +144,37 @@ void PrintArray(char *filename)
 }
 void per_row()
 {
+    matOutB = AllocOutMat();
     int numThreads = rows[2];
     pthread_t RowThread[numThreads];
     for (int i = 0; i < numThreads; i++)
     {
-        void* arg = &i;
-        if (pthread_create(&RowThread[i], NULL, &RowThreadRoutine, arg))
+        int* a = malloc(sizeof(int));
+        *a = i;
+        printf("pthread i is %d\n",i);
+
+        if (pthread_create(&RowThread[i], NULL, &RowThreadRoutine, a))
         {
             perror("Error: ");
         }
     }
-    for (int i = 0; i < rows[2]; i++) // wait for all threads to terminate
+    for (int i = 0; i < numThreads; i++) // wait for all threads to terminate
         pthread_join(RowThread[i], NULL);
-}
-void *RowThreadRoutine(void *row)
-{
-    int* i = (int*)row;
-    int row_number = *i;
-    for (int c1 = 0; c1 < rows[2]; c1++)
-    {
-        for (int c2 = 0; c2 < cols[2]; c2++)
-            matOut[row_number][c1] += matA[row_number][c2] * matB[c2][c1];
-
-
-    }
     char filename[50];
     strcpy(filename, OutputFile);
     strcat(filename, "_per_row.txt");
-    PrintArray(filename);
-    i++;
+    PrintArray(filename,matOutB);
+    free(matOutB);
+}
+void *RowThreadRoutine(void *row)
+{
+    int i = *(int*)row;
+    printf("i is %d\n",i);
+    for (int c1 = 0; c1 < cols[1]; c1++)
+    {
+        matOutB[i][c1] = 0;
+        for (int c2 = 0; c2 < cols[0]; c2++)
+            matOutB[i][c1] += matA[i][c2] * matB[c2][c1];
+    }
+    free(row);
 }

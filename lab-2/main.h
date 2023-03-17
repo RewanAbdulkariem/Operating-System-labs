@@ -6,9 +6,9 @@
 #define UNTITLED_MAIN_H
 void ReadMatrix(char *a, int index);
 int **MatrixSize(int index);
-void AllocOutMat();
+int ** AllocOutMat();
 void PerMatrix();
 void per_row();
 void *RowThreadRoutine(void *row);
-void PrintArray(char *filename);
+void PrintArray(char *filename,int **matOut);
 #endif //UNTITLED_MAIN_H
