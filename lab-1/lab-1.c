@@ -63,8 +63,8 @@ void shell()
         InternalCmd = 0;    // reset the InternalCmd flag
 
         getcwd(cwd, 256);   // get the current working directory and store it in the cwd variable
-        printf("%s ",cwd);    // print the current working directory
-        printf("SHELL# ");     // print the prompt
+        printf("\e[1;32m %s ",cwd);    // print the current working directory
+        printf("\e[1;31m SHELL# ");     // print the prompt
 
         // Check if get-line() fails or the user enters an empty command
         if (getline(&cmd, &n, stdin) == -1 || cmd[0] == '\n')
