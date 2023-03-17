@@ -102,7 +102,15 @@ int ** AllocOutMat()
 {
     rows[2] = rows[0];
     cols[2] = cols[1];
-    return MatrixSize(2);
+    int **Matrix = MatrixSize(2);
+    for(int i = 0; i < rows[2]; i++)
+    {
+        for(int j = 0; j < cols[2]; j++)
+        {
+            Matrix[i][j] = 0;
+        }
+    }
+    return Matrix;
 }
 void PrintArray(char *filename,int **matOut)
 {
@@ -128,7 +136,6 @@ void PerMatrix()
     {
         for(int j = 0; j < cols[2]; j++)
         {
-            matOutA[i][j] = 0;
             for(int k = 0; k < cols[0]; k++)
                 matOutA[i][j] += matA[i][k] * matB[k][j];
         }
@@ -155,6 +162,7 @@ void per_row()
     }
     for (int i = 0; i < numThreads; i++) // wait for all threads to terminate
         pthread_join(RowThread[i], NULL);
+    printf("number of threads created in part2: %d\n",numThreads);
     char filename[50];
     strcpy(filename, OutputFile);
     strcat(filename, "_per_row.txt");
@@ -188,6 +196,8 @@ void per_element()
     }
     for (int i = 0; i < numThreads; i++) // wait for all threads to terminate
         pthread_join(ElementThread[i], NULL);
+    printf("number of threads created in part3: %d\n",numThreads);
+
     char filename[50];
     strcpy(filename, OutputFile);
     strcat(filename, "_per_element.txt");
@@ -204,9 +214,9 @@ void per_element()
 void *ElementThreadRoutine(void *element)
 {
     int elem = *(int*)element;
-    int row = elem / rows[2];
-    int col = elem % rows[2];
-    matOutC[row][col] = 0;
+    int row = elem / cols[2];
+    int col = elem % cols[2];
+
     for (int i = 0; i < cols[0]; i++ )
     {
         /**printf("row is %d col is %d mata is %d matb is %d",row,col ,matA[row][i],matB[i][col]);*/
