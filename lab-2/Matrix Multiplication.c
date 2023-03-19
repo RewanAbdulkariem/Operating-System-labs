@@ -38,21 +38,21 @@ int main(int argc, char *argv[])
     gettimeofday(&start, NULL); //start checking time
     PerMatrix();
     gettimeofday(&stop, NULL); //end checking time
-    printf("Seconds taken in first method %lu\n", stop.tv_sec - start.tv_sec);
+    printf("Seconds taken in first method %lu  ", stop.tv_sec - start.tv_sec);
     printf("Microseconds taken in the first method: %lu\n\n", stop.tv_usec - start.tv_usec);
 
     // Performing matrix multiplication using second method
     gettimeofday(&start, NULL); //start checking time
     per_row();
     gettimeofday(&stop, NULL); //end checking time
-    printf("Seconds taken in second method %lu\n", stop.tv_sec - start.tv_sec);
+    printf("Seconds taken in second method %lu  ", stop.tv_sec - start.tv_sec);
     printf("Microseconds taken in second method: %lu\n\n", stop.tv_usec - start.tv_usec);
 
     // Performing matrix multiplication using third method
     gettimeofday(&start, NULL); //start checking time
     per_element();
     gettimeofday(&stop, NULL); //end checking time
-    printf( "Seconds taken in third method %lu\n", stop.tv_sec - start.tv_sec);
+    printf( "Seconds taken in third method %lu ", stop.tv_sec - start.tv_sec);
     printf("Microseconds taken in third method: %lu\n\n", stop.tv_usec - start.tv_usec);
 
     // Freeing memory allocated to matrices
