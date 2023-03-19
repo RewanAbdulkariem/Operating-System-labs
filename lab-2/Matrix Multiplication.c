@@ -180,7 +180,7 @@ void per_row()
             perror("Error: ");
         }
     }
-	free(a);
+
     for (int i = 0; i < numThreads; i++) // wait for all threads to terminate
         pthread_join(RowThread[i], NULL);
     printf("number of threads created in part2: %d\n",numThreads);
@@ -224,7 +224,6 @@ void per_element()
             perror("Error: ");
         }
     }
-	free(a);
     for (int i = 0; i < numThreads; i++) // wait for all threads to terminate
         pthread_join(ElementThread[i], NULL);
     printf("number of threads created in part3: %d\n",numThreads);
