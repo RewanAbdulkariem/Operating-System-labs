@@ -1,3 +1,0 @@
-/home/rewan/Operating System labs/lab-3/cmake-build-debug/CMakeFiles/lab_3.dir
-/home/rewan/Operating System labs/lab-3/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/rewan/Operating System labs/lab-3/cmake-build-debug/CMakeFiles/rebuild_cache.dir
