@@ -22,7 +22,7 @@ void* fuel_filling(void* arg) {
 
 void* car(void* arg) {
         pthread_mutex_lock(&mutexFuel);
-        while (fuel<=40)
+        if (fuel<=40)
         {
             printf("no fuel. waiting ....\n");
             pthread_cond_wait(&condFuel,&mutexFuel);

@@ -3,7 +3,6 @@
 #include "caltrain.h"
 /**
  * station_init - initialize the station object
- * @station:  pointer to the station object to be initialized
  */
 void station_init(struct station *station)
 {
@@ -20,23 +19,22 @@ void station_init(struct station *station)
  * and has opened its doors, it invokes the function
   * The function must not return until the train is satisfactorily loaded
  * @count: indicates how many seats are available on the train.
- * @station: pointer to the station object.
  */
 void station_load_train(struct station *station, int count)
 {
 	// FILL ME IN
+    /** If there are no available seats or no waiting passengers, return */
     if (count == 0 || station->WaitingPassengers == 0)
         return;
     pthread_mutex_lock(&station->MutexLock);
     station->FreeSeats = count;             /** update the number of free seats on the train */
-
     /** wait until all passengers are on board or there are no more free seats */
-    while (station->WaitingPassengers > 0 && station->FreeSeats > 0)
+    if (station->WaitingPassengers > 0 && station->FreeSeats > 0)
     {
         pthread_cond_broadcast(&station->TrainArrive);
         pthread_cond_wait(&station->TrainLeft, &station->MutexLock);
-
     }
+
     pthread_mutex_unlock(&station->MutexLock);
 }
 /**
@@ -44,7 +42,6 @@ void station_load_train(struct station *station, int count)
  * it first invokes the function
  * This function must not return until a train is in the station and
  * there are enough free seats on the train for this passenger to sit down
- * @station: pointer to the station object.
  */
 void station_wait_for_train(struct station *station)
 {
@@ -63,13 +60,13 @@ void station_wait_for_train(struct station *station)
 }
 /**
  * station_on_board - Once the passenger is seated, it will call the function
- * @station: pointer to the station object.
  */
 void station_on_board(struct station *station)
 {
 	// FILL ME IN
     pthread_mutex_lock(&station->MutexLock);
     station->OnBoardPassengers--;
+    /** If there are no more waiting passengers or free seats and all passengers are on board, signal that the train has left */
     if ((station->WaitingPassengers == 0 || station->FreeSeats == 0) && station->OnBoardPassengers == 0)
     {
         /** Signal that the passenger has boarded the train */

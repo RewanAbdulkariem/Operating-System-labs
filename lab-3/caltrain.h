@@ -8,7 +8,6 @@ struct station {
     int WaitingPassengers;
     int OnBoardPassengers;
     int FreeSeats;
-
 };
 
 void station_init(struct station *station);
