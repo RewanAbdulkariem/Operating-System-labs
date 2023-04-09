@@ -2,6 +2,13 @@
 
 struct station {
 	// FILL ME IN
+    pthread_mutex_t MutexLock;
+    pthread_cond_t TrainLeft;
+    pthread_cond_t TrainArrive;
+    int WaitingPassengers;
+    int OnBoardPassengers;
+    int FreeSeats;
+
 };
 
 void station_init(struct station *station);
